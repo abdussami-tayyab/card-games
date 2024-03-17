@@ -6,7 +6,6 @@ This repository hosts a backend API designed for card games, built using Golang 
 The API supports the following functionalities:
 - **Create a Deck**: Generates a deck of cards. By default, a deck contains 52 cards (13 from each suit: Spades, Diamonds, Clubs, Hearts, in order). Users can specify a subset of cards to include in the deck. The API also supports shuffling the deck.
 
-Example response for creating a deck:
 ```
 {
   "deck_id": "a251071b-662f-44b6-ba11-e24863039c59",
@@ -17,7 +16,6 @@ Example response for creating a deck:
 ***
 - **Open a Deck**: Retrieves details about a specific deck, including its ID, shuffle status, remaining cards, and the cards themselves.
 
-Example response for opening a deck:
 ```
 {
   "deck_id": "a251071b-662f-44b6-ba11-e24863039c59",
@@ -32,7 +30,6 @@ Example response for opening a deck:
 ```
 ***
 - **Draw Cards**: Allows drawing a specified number of cards from a deck.
-Example response for drawing cards:
 ```
 {
   "cards": [
