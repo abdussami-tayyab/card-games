@@ -10,7 +10,7 @@ var valueMappings = map[rune]string{
 	'7': "7",
 	'8': "8",
 	'9': "9",
-	'T': "10",
+	'T': "TEN",
 	'J': "JACK",
 	'Q': "QUEEN",
 	'K': "KING",

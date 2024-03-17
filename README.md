@@ -67,3 +67,17 @@ There is also a Postman Collection
 For questions or feedback, please contact me at tayyab.abdussami@gmail.com.
 
 Thank you for checking out my project! This is my second project in Go, and I'm eager to continue learning and improving.
+
+### Additional
+Sharing list of APIs here:
+**Creating Decks**
+  (Generating a full deck of unshuffled cards) `curl -X POST "http://localhost:8080/api/v1/decks"`
+  (Generating a full deck of shuffled cards) `curl -X POST "http://localhost:8080/api/v1/decks?shuffle=true" `
+  (Generating a partial deck of unshuffled cards) `curl -X POST "http://localhost:8080/api/v1/decks?cards=AS,2C,KH,KD,TC"`
+  (Generating a partial deck of shuffled cards) `curl -X POST "http://localhost:8080/api/v1/decks?shuffle=true&cards=AS,2C,KH,KD,TC"`
+
+**Opening Decks**
+  (Opening a deck of cards) `curl -X GET "http://localhost:8080/api/v1/decks/XXXXXXXX-4e84-4dc6-968c-XXXXXXXX"`
+
+**Drawing Cards**
+  (Drawing cards from a deck) `curl -X POST "http://localhost:8080/api/v1/decks/XXXXXXXX-4e84-4dc6-968c-XXXXXXXX/draw?count=3`

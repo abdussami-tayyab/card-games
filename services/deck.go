@@ -40,7 +40,7 @@ func (ds *DeckService) CreateDeck(shuffled bool, wantedCards string) (model.Deck
 
 // Get the full deck, all cards.
 func getAllCards() (cards []model.Card) {
-	values := []string{"ACE", "2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING"}
+	values := []string{"ACE", "2", "3", "4", "5", "6", "7", "8", "9", "TEN", "JACK", "QUEEN", "KING"}
 	suits := []string{"SPADES", "DIAMONDS", "CLUBS", "HEARTS"}
 
 	for _, suit := range suits {
