@@ -181,8 +181,6 @@ func TestOpenDeckWithInvalidDeck(t *testing.T) {
 	if w.Code != http.StatusNotFound {
 		t.Fatalf("Expected status code %d, but got %d", http.StatusNotFound, w.Code)
 	}
-
-	// Todo: add a check to see if the JSON error response is also correct
 }
 
 func TestDrawCardsWithValidDeckAndValidCount(t *testing.T) {
@@ -204,10 +202,17 @@ func TestDrawCardsWithValidDeckAndValidCount(t *testing.T) {
 		log.Printf("%v", w.Body)
 		t.Fatalf("Expected status code %d, but got %d", http.StatusOK, w.Code)
 	}
-	var drawnCards []model.Card
-	if err := json.Unmarshal(w.Body.Bytes(), &drawnCards); err != nil {
+	// Struct to hold response
+	type drawResponse struct {
+		Cards []model.Card `json:"cards"`
+	}
+
+	var response drawResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
 		t.Fatalf("Failed to parse response body: %v", err)
 	}
+
+	drawnCards := response.Cards
 
 	// Check if count and drawn cards are equal
 	if len(drawnCards) != count {
@@ -259,7 +264,6 @@ func TestDrawCardsWithInvalidDeck(t *testing.T) {
 	if w.Code != http.StatusNotFound {
 		t.Fatalf("Expected status code %d, but got %d", http.StatusNotFound, w.Code)
 	}
-
 	// Todo: add a check to see if the JSON error response is also correct
 }
 
@@ -278,6 +282,15 @@ func TestDrawCardsFromEmptyDeck(t *testing.T) {
 	w = performRequest(router, "POST", fmt.Sprintf("/decks/%s/draw?count=1", deckId), nil)
 	if w.Code != http.StatusOK {
 		t.Fatalf("Expected status code %d, but got %d", http.StatusOK, w.Code)
+	}
+	// Struct to hold response
+	type drawResponse struct {
+		Cards []model.Card `json:"cards"`
+	}
+
+	var response drawResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+		t.Fatalf("Failed to parse response body: %v", err)
 	}
 
 	// Then draw one card again from deck (now empty)

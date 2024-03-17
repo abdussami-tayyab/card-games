@@ -8,9 +8,9 @@ import (
 
 func main() {
 	router := gin.Default()
-	router.POST("/decks", h.CreateDeck)
-	router.GET("/decks/:id", h.OpenDeck)
-	router.POST("/decks/:id/draw", h.DrawCards)
+	router.POST("/api/v1/decks", h.CreateDeck)
+	router.GET("/api/v1/decks/:id", h.OpenDeck)
+	router.POST("/api/v1/decks/:id/draw", h.DrawCards)
 
 	router.Run()
 }
