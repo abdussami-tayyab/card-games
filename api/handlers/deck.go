@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"slices"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -24,7 +27,6 @@ func CreateDeck(c *gin.Context) {
 	if err != nil {
 		log.Println("Error while creating deck", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to create deck"})
-
 		return
 	}
 	AllDecks[newDeck.DeckID] = newDeck
@@ -33,7 +35,6 @@ func CreateDeck(c *gin.Context) {
 		DeckID:    newDeck.DeckID.String(),
 		Shuffled:  newDeck.Shuffled,
 		Remaining: len(newDeck.Cards),
-		Cards:     newDeck.Cards,
 	}
 
 	c.IndentedJSON(http.StatusCreated, response)
@@ -43,34 +44,99 @@ func CreateDeck(c *gin.Context) {
 func OpenDeck(c *gin.Context) {
 	deckId := c.Param("id")
 
-	// No UUID passed
-	if deckId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No UUID found in request"})
-		return
-	}
-
-	// Invalid UUID passed
-	parsedUuid, err := uuid.Parse(deckId)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to parse Deck ID"})
-		return
-	}
-
 	// Find deck with given uuid
-	deck, found := AllDecks[parsedUuid]
-	if !found {
-		log.Printf("No deck found for UUID %s", deckId)
-
-		c.JSON(http.StatusNotFound, gin.H{"error": "No deck found."})
+	status, response := ValidateDeck(deckId)
+	if status != http.StatusOK {
+		c.JSON(status, response)
 		return
 	}
 
-	response := model.DeckResponse{
+	parsedUuid, _ := uuid.Parse(deckId)
+	deck := AllDecks[parsedUuid]
+
+	deckResponse := model.DeckResponse{
 		DeckID:    deck.DeckID.String(),
 		Shuffled:  deck.Shuffled,
 		Remaining: len(deck.Cards),
 		Cards:     deck.Cards,
 	}
 
-	c.IndentedJSON(http.StatusOK, response)
+	c.IndentedJSON(http.StatusOK, deckResponse)
+}
+
+// Draw cards from deck
+func DrawCards(c *gin.Context) {
+	deckId := c.Param("id")
+	countStr := c.Query("count")
+
+	// Find deck with given uuid
+	status, response := ValidateDeck(deckId)
+	if status != http.StatusOK {
+		c.JSON(status, response)
+		return
+	}
+
+	// All clear, fetch values
+	parsedUuid, _ := uuid.Parse(deckId)
+	deck := AllDecks[parsedUuid]
+	cards := deck.Cards
+
+	// Count validation
+	// count checks
+	// 1. count is invalid
+	count, err := strconv.Atoi(countStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'count' parameter, must be an integer"})
+		return
+	}
+
+	// 2. user requests <0 cards
+	if count <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You must draw at least 1 card"})
+		return
+	}
+
+	// 3. user requests >remaining cards
+	if count > len(cards) {
+		errorMsg := fmt.Sprintf("Deck has %d cards but you are requesting %d", len(cards), count)
+		c.JSON(http.StatusBadRequest, gin.H{"error": errorMsg})
+		return
+	}
+
+	// Draw cards from deck
+	startIndex := len(cards) - count
+	drawn := cards[startIndex:]
+
+	// Reverse them for showing to client in order
+	slices.Reverse(drawn)
+
+	// Update original deck
+	deck.Cards = cards[:startIndex]
+	AllDecks[parsedUuid] = deck
+
+	c.IndentedJSON(http.StatusOK, drawn)
+}
+
+// Validate if a deck passes all requirements
+// Todo: Can be moved to a middleware
+func ValidateDeck(deckId string) (status int, response map[string]any) {
+	// No UUID passed
+	if deckId == "" {
+		return http.StatusBadRequest, gin.H{"error": "No UUID found in request"}
+	}
+
+	// Invalid UUID passed
+	parsedUuid, err := uuid.Parse(deckId)
+	if err != nil {
+		return http.StatusBadRequest, gin.H{"error": "Unable to parse Malformed Deck ID"}
+	}
+
+	// Find deck with given uuid
+	_, found := AllDecks[parsedUuid]
+	if !found {
+		log.Printf("No deck found for UUID %s", deckId)
+		return http.StatusNotFound, gin.H{"error": "No deck found."}
+	}
+
+	return http.StatusOK, nil
 }

@@ -20,7 +20,7 @@ type DeckResponse struct {
 	DeckID    string `json:"deck_id"`
 	Shuffled  bool   `json:"shuffled"`
 	Remaining int    `json:"remaining"`
-	Cards     []Card `json:"cards"`
+	Cards     []Card `json:"cards,omitempty"`
 }
 
 // A card that belongs to a deck

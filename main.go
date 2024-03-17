@@ -10,7 +10,8 @@ func main() {
 	router := gin.Default()
 
 	router.POST("/decks", h.CreateDeck)
-	router.GET("/decks", h.OpenDeck)
+	router.GET("/decks/:id", h.OpenDeck)
+	router.POST("/decks/:id/draw", h.DrawCards)
 
 	router.Run()
 }
