@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"slices"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -107,19 +106,19 @@ func DrawCards(c *gin.Context) {
 	startIndex := len(cards) - count
 	drawn := cards[startIndex:]
 
-	// Reverse them for showing to client in order
-	slices.Reverse(drawn)
-
 	// Update original deck
 	deck.Cards = cards[:startIndex]
 	AllDecks[parsedUuid] = deck
 
-	c.IndentedJSON(http.StatusOK, drawn)
+	clientResponse := map[string][]model.Card{}
+	clientResponse["cards"] = drawn
+
+	c.IndentedJSON(http.StatusOK, clientResponse)
 }
 
 // Validate if a deck passes all requirements
 // Todo: Can be moved to a middleware
-func ValidateDeck(deckId string) (status int, response map[string]any) {
+func ValidateDeck(deckId string) (status int, response map[string]interface{}) {
 	// No UUID passed
 	if deckId == "" {
 		return http.StatusBadRequest, gin.H{"error": "No UUID found in request"}
