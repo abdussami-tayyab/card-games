@@ -7,10 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
-// DeckService provides operations on decks of cards
+// DeckService provides operations on decks of cards.
 type DeckService struct{}
 
-// NewDeckService creates a new instance of DeckService
+// NewDeckService creates a new instance of DeckService.
 func NewDeckService() *DeckService {
 	return &DeckService{}
 }
@@ -40,6 +40,7 @@ func (ds *DeckService) CreateDeck(shuffled bool, wantedCards string) (model.Deck
 
 // Get the full deck, all cards.
 func getAllCards() (cards []model.Card) {
+	// Todo: this code can and must be better
 	values := []string{"ACE", "2", "3", "4", "5", "6", "7", "8", "9", "TEN", "JACK", "QUEEN", "KING"}
 	suits := []string{"SPADES", "DIAMONDS", "CLUBS", "HEARTS"}
 
@@ -52,7 +53,7 @@ func getAllCards() (cards []model.Card) {
 	return
 }
 
-// Get only the cards wanted by client.
+// Get only the cards wanted by user/client.
 func getWantedCards(wantedCards string) (cards []model.Card) {
 	wantedCardsArr := strings.Split(wantedCards, ",")
 

@@ -1,5 +1,6 @@
 package util
 
+// Mappings for card value.
 var valueMappings = map[rune]string{
 	'A': "ACE",
 	'2': "2",
@@ -16,6 +17,7 @@ var valueMappings = map[rune]string{
 	'K': "KING",
 }
 
+// Mappings for suits.
 var suitMappings = map[rune]string{
 	'S': "SPADES",
 	'D': "DIAMONDS",

@@ -8,22 +8,22 @@ import (
 	"github.com/google/uuid"
 )
 
-// A deck of cards
+// A deck of cards.
 type Deck struct {
 	DeckID   uuid.UUID `json:"deck_id"`
 	Shuffled bool      `json:"shuffled"`
 	Cards    []Card    `json:"cards"`
 }
 
-// A type for Deck to respond in requests
+// A type for Deck to respond in handlers.
 type DeckResponse struct {
 	DeckID    string `json:"deck_id"`
 	Shuffled  bool   `json:"shuffled"`
 	Remaining int    `json:"remaining"`
-	Cards     []Card `json:"cards,omitempty"`
+	Cards     []Card `json:"cards,omitempty"` // as cards are optional in some responses
 }
 
-// A card that belongs to a deck
+// A Card that belongs to a deck.
 type Card struct {
 	Suit  string `json:"suit"`
 	Value string `json:"value"`

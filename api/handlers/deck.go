@@ -13,6 +13,8 @@ import (
 	"github.com/abdussami-tayyab/card-games/services"
 )
 
+// Decks are being stored here instead of database as outside scope
+// Todo: Can move to a better place in another file
 var AllDecks = make(map[uuid.UUID]model.Deck)
 
 // Create a new deck of cards
