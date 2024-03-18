@@ -32,3 +32,5 @@ jobs:
         slug: abdussami-tayyab/card-games
         file: ./coverage.txt
         fail_ci_if_error: true  # Optional: specify if CI should fail when Codecov runs into errors.
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
